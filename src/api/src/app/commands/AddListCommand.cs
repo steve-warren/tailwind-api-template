@@ -6,22 +6,19 @@ namespace WarrenSoft.Reminders.Http;
 public sealed record AddListCommand(string OwnerId, string Name, string ColorId, string EmojiId);
 
 [ApiController]
-public sealed class AddListCommandHandler : ControllerBase
+public sealed class AddListCommandHandler
 {
-    [HttpPost("api/reminders")]
+    [HttpPost("api/lists")]
     public async Task<IActionResult> Handle(
         [FromBody] AddListCommand command,
         [FromServices] IReminderListRepository reminderLists,
         [FromServices] IEntityIdentityProvider ids,
-        [FromServices] IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
         var reminderList = new ReminderList(id: ids.NextReminderListId(), command.OwnerId, command.Name);
 
         reminderLists.Add(reminderList);
 
-        await unitOfWork.CommitAsync(cancellationToken);
-
-        return Ok();
+        return new OkObjectResult(reminderList.Id);
     }
 }

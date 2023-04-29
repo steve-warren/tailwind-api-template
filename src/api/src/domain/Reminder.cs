@@ -15,15 +15,16 @@ public class Reminder : IAggregateRoot, IEntity, IEventEmitter
         _state = null!;
     }
 
-    public Reminder(string id, string ownerId, string listId, string title, string notes, IReminderState state)
+    public Reminder(string id, string ownerId, string listId, string title, string notes)
     {
         Id = id;
         OwnerId = ownerId;
         ListId = listId;
         Title = title;
         Notes = notes;
-        State = state.State;
 
+        var state = new ActiveReminder();
+        State = state.State;
         _state = state;
     }
 
@@ -40,9 +41,14 @@ public class Reminder : IAggregateRoot, IEntity, IEventEmitter
         Title = title;
     }
 
+    public void ChangeState(IReminderState state)
+    {
+        _state = state;
+        State = state.State;
+    }
+
     public bool OwnedBy(string ownerId) => OwnerId == ownerId;
 
     public static ActiveReminder? FromActive(Reminder reminder) => reminder._state as ActiveReminder;
     public static CompletedReminder? FromCompleted(Reminder reminder) => reminder._state as CompletedReminder;
-    public static void ReplaceState(Reminder reminder, IReminderState state) => reminder._state = state;
 }

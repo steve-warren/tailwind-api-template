@@ -6,7 +6,7 @@ namespace WarrenSoft.Reminders.Http;
 public sealed record AddReminderCommand(string ListId, string OwnerId, string Title, string Notes);
 
 [ApiController]
-public sealed class AddReminderCommandHandler : ControllerBase
+public sealed class AddReminderCommandHandler
 {
     [HttpPost("api/reminders")]
     public async Task<IActionResult> Handle(
@@ -14,20 +14,17 @@ public sealed class AddReminderCommandHandler : ControllerBase
         [FromServices] IReminderListRepository reminderLists,
         [FromServices] IReminderRepository reminders,
         [FromServices] IEntityIdentityProvider ids,
-        [FromServices] IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
         var reminderList = await reminderLists.FindAsync(id: command.ListId, cancellationToken);
 
         if (reminderList.OwnedBy(command.OwnerId) is false)
-            return BadRequest();
+            return new BadRequestResult();
 
         var reminder = reminderList.CreateReminder(id: ids.NextReminderId(), command.Title, command.Notes);
 
         reminders.Add(reminder);
 
-        await unitOfWork.CommitAsync(cancellationToken);
-
-        return Ok(reminder);
+        return new OkObjectResult(reminder);
     }
 }
