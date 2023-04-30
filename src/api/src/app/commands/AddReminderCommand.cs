@@ -1,9 +1,19 @@
+using System.ComponentModel;
+
 using Microsoft.AspNetCore.Mvc;
+
+using WarrenSoft.Reminders.App.TypeConverters;
 using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Http;
 
-public sealed record AddReminderCommand(string ListId, string OwnerId, string Title, string Notes);
+public sealed record AddReminderCommand(
+    string ListId, 
+    string OwnerId, 
+    string Title, 
+    string Notes,
+    ReminderPriority Priority, 
+    DateTimeOffset? DueOn);
 
 [ApiController]
 public sealed class AddReminderCommandHandler
@@ -18,10 +28,13 @@ public sealed class AddReminderCommandHandler
     {
         var reminderList = await reminderLists.FindAsync(id: command.ListId, cancellationToken);
 
+        if (reminderList is null)
+            return new BadRequestResult();
+
         if (reminderList.OwnedBy(command.OwnerId) is false)
             return new BadRequestResult();
 
-        var reminder = reminderList.CreateReminder(id: ids.NextReminderId(), command.Title, command.Notes);
+        var reminder = reminderList.CreateReminder(id: ids.NextReminderId(), command.Title, command.Notes, command.DueOn, command.Priority);
 
         reminders.Add(reminder);
 

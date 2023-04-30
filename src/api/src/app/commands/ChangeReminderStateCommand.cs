@@ -21,7 +21,7 @@ public sealed class ChangeReminderStateCommandHandler
 
         if (reminder.OwnedBy(command.OwnerId) is false)
             return new ForbidResult();
-        
+
         var result = command.NewState switch
         {
             ActiveReminder.Active => ActivateReminder(reminder),

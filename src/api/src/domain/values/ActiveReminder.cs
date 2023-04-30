@@ -1,6 +1,6 @@
 namespace WarrenSoft.Reminders.Domain;
 
-public sealed record ActiveReminder : IReminderState
+public sealed class ActiveReminder : IReminderState
 {
     public const string Active = "Active";
     public string State => Active;

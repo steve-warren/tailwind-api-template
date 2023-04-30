@@ -1,6 +1,6 @@
 namespace WarrenSoft.Reminders.Domain;
 
-public sealed record CompletedReminder : IReminderState
+public sealed class CompletedReminder : IReminderState
 {
     public const string Completed = "Completed";
     public DateTimeOffset CompletedOn { get; init; }

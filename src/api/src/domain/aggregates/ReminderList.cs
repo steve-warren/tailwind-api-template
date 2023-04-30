@@ -19,9 +19,9 @@ public class ReminderList : IAggregateRoot, IEntity, IEventEmitter
     public string Name { get; }
     List<IDomainEvent> IEventEmitter.DomainEvents => new();
 
-    public Reminder CreateReminder(string id, string title, string notes)
+    public Reminder CreateReminder(string id, string title, string notes, DateTimeOffset? dueOn, ReminderPriority? priority)
     {
-        var reminder = new Reminder(id: id, ownerId: OwnerId, listId: Id, title, notes);
+        var reminder = new Reminder(id: id, ownerId: OwnerId, listId: Id, title, notes, dueOn, priority);
         
         _eventEmitter.AddEvent(new ReminderCreatedEvent(reminder));
         
