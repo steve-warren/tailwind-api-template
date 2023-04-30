@@ -1,4 +1,4 @@
-using WarrenSoft.Reminders.App.TypeConverters;
+using WarrenSoft.Reminders.Infra.Converters;
 using WarrenSoft.Reminders.Domain;
 using WarrenSoft.Reminders.Infra;
 
