@@ -1,0 +1,15 @@
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.csproj.AssemblyReference.cache
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.GeneratedMSBuildEditorConfig.editorconfig
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.AssemblyInfoInputs.cache
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.AssemblyInfo.cs
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.csproj.CoreCompileInputs.cache
+/Users/stevewarren/src/tailwind-api-template/src/infra/bin/Debug/net7.0/infra.deps.json
+/Users/stevewarren/src/tailwind-api-template/src/infra/bin/Debug/net7.0/infra.dll
+/Users/stevewarren/src/tailwind-api-template/src/infra/bin/Debug/net7.0/infra.pdb
+/Users/stevewarren/src/tailwind-api-template/src/infra/bin/Debug/net7.0/domain.dll
+/Users/stevewarren/src/tailwind-api-template/src/infra/bin/Debug/net7.0/domain.pdb
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.csproj.CopyComplete
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.dll
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/refint/infra.dll
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/infra.pdb
+/Users/stevewarren/src/tailwind-api-template/src/infra/obj/Debug/net7.0/ref/infra.dll

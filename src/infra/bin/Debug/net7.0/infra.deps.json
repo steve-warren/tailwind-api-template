@@ -1,0 +1,52 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "infra/1.0.0": {
+        "dependencies": {
+          "KsuidDotNet": "1.0.1",
+          "domain": "1.0.0"
+        },
+        "runtime": {
+          "infra.dll": {}
+        }
+      },
+      "KsuidDotNet/1.0.1": {
+        "runtime": {
+          "lib/netstandard2.1/ksuid.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
+      "domain/1.0.0": {
+        "runtime": {
+          "domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "infra/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "KsuidDotNet/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-J0rGw9OKQLvcyAgEPCdaDfq7ezO+B1tRjudFmnBm89mkje5NiacU71rjsQRyHdrwNl54S3XZKcJ7lljkr6TsiA==",
+      "path": "ksuiddotnet/1.0.1",
+      "hashPath": "ksuiddotnet.1.0.1.nupkg.sha512"
+    },
+    "domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

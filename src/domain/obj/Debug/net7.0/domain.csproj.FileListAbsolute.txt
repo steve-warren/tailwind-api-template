@@ -1,0 +1,12 @@
+/Users/stevewarren/src/tailwind-api-template/src/domain/bin/Debug/net7.0/domain.deps.json
+/Users/stevewarren/src/tailwind-api-template/src/domain/bin/Debug/net7.0/domain.dll
+/Users/stevewarren/src/tailwind-api-template/src/domain/bin/Debug/net7.0/domain.pdb
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.csproj.AssemblyReference.cache
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.AssemblyInfoInputs.cache
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.AssemblyInfo.cs
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.csproj.CoreCompileInputs.cache
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.dll
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/refint/domain.dll
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/domain.pdb
+/Users/stevewarren/src/tailwind-api-template/src/domain/obj/Debug/net7.0/ref/domain.dll
