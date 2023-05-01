@@ -11,11 +11,16 @@ public sealed class AddListCommandHandler
     [HttpPost("api/lists")]
     public async Task<IActionResult> Handle(
         [FromBody] AddListCommand command,
+        [FromServices] IPlanRepository plans,
         [FromServices] IReminderListRepository reminderLists,
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
-        var reminderList = new ReminderList(id: ids.NextReminderListId(), command.OwnerId, command.Name);
+        var plan = await plans.GetByIdAsync(command.OwnerId, cancellationToken);
+ 
+        var reminderList = plan.AddList(
+            id: ids.NextReminderListId(),
+            name: command.Name);
 
         reminderLists.Add(reminderList);
 

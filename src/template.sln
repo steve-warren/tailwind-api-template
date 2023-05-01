@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\unit\test.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mock", "test\mock\mock.csproj", "{31D76DF6-0DAD-4B02-90CB-CCE12E22F835}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "func", "func\func.csproj", "{522A6599-4FD7-421D-8854-A687D6C678E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{31D76DF6-0DAD-4B02-90CB-CCE12E22F835}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31D76DF6-0DAD-4B02-90CB-CCE12E22F835}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31D76DF6-0DAD-4B02-90CB-CCE12E22F835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{522A6599-4FD7-421D-8854-A687D6C678E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{522A6599-4FD7-421D-8854-A687D6C678E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{522A6599-4FD7-421D-8854-A687D6C678E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{522A6599-4FD7-421D-8854-A687D6C678E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{32EBA407-4CFA-4485-8B57-40588E92E051} = {BA6D5F50-98C2-43CD-8C7F-643E7A383078}
