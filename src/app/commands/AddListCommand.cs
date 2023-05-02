@@ -11,18 +11,28 @@ public sealed class AddListCommandHandler
     [HttpPost("api/lists")]
     public async Task<IActionResult> Handle(
         [FromBody] AddListCommand command,
-        [FromServices] IPlanRepository plans,
         [FromServices] IReminderListRepository reminderLists,
         [FromServices] IEntityIdentityProvider ids,
+        [FromServices] IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var plan = await plans.GetByIdAsync(command.OwnerId, cancellationToken);
- 
-        var reminderList = plan.AddList(
+        var plan = new Plan(
+        id: "pl_123",
+        ownerId: command.OwnerId,
+        name: "My Plan",
+        description: "My plan description",
+        startsOn: DateTimeOffset.UtcNow,
+        endsOn: DateTimeOffset.UtcNow.AddDays(7));
+
+        var reminderList = plan.CreateList(
             id: ids.NextReminderListId(),
             name: command.Name);
 
+        var list = await reminderLists.FindAsync(id: "rl_2PE4ZvJYCdwBpdICiT2tnG5FocF", cancellationToken);
+
         reminderLists.Add(reminderList);
+
+        await unitOfWork.CommitAsync(cancellationToken);
 
         return new OkObjectResult(reminderList.Id);
     }

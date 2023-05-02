@@ -33,14 +33,12 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
 
     List<IDomainEvent> IEventEmitter.DomainEvents => _domainEvents;
 
-    public ReminderList AddList(string id, string name)
+    public ReminderList CreateList(string id, string name)
     {
         var list = new ReminderList(
             id: id,
-            ownerId: Id,
+            ownerId: OwnerId,
             name: name);
-        
-        _domainEvents.Add(new ReminderListAddedEvent(list));
 
         return list;
     }

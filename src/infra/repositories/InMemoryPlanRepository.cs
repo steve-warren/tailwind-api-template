@@ -4,20 +4,21 @@ namespace WarrenSoft.Reminders.Infra;
 
 public class InMemoryPlanRepository : IPlanRepository
 {
+    private readonly IUnitOfWork _unitOfWork;
+
+    public InMemoryPlanRepository(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+    
     public void Add(Plan plan)
     {
-        throw new NotImplementedException();
+        _unitOfWork.Register(plan);
     }
 
     public Task<Plan?> GetByIdAsync(string ownerId, CancellationToken cancellationToken = default)
     {
-            return new Plan(
-            id: "pl_123",
-            ownerId: ownerId,
-            name: "My Plan",
-            description: "My plan description",
-            startsOn: DateTimeOffset.UtcNow,
-            endsOn: DateTimeOffset.UtcNow.AddDays(7))
+        throw new NotImplementedException();
     }
 
     public void Remove(string id)

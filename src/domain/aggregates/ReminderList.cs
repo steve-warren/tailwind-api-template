@@ -8,16 +8,21 @@ public class ReminderList : IAggregateRoot, IEntity, IEventEmitter
     [JsonIgnore]
     private readonly List<IDomainEvent> _domainEvents = new();
 
+    private ReminderList() { }
+
     public ReminderList(string id, string ownerId, string name)
     {
         Id = id;
         OwnerId = ownerId;
         Name = name;
+
+        _domainEvents.Add(new ReminderListAddedEvent(this));
     }
 
-    public string Id { get; }
-    public string OwnerId { get; }
-    public string Name { get; }
+    public string Id { get; } = null!;
+    public string OwnerId { get; } = null!;
+    public string Name { get; } = null!;
+    
     List<IDomainEvent> IEventEmitter.DomainEvents => _domainEvents;
 
     public Reminder CreateReminder(string id, string title, string notes, DateTimeOffset? dueOn, ReminderPriority? priority)

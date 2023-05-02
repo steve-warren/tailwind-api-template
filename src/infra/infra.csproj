@@ -13,5 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="KsuidDotNet" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.33.0" />
   </ItemGroup>
 </Project>
