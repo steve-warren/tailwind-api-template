@@ -15,7 +15,7 @@ public sealed class CosmosReminderListRepository : IReminderListRepository
         _lists.Add(list);
 
     public Task<ReminderList?> FindAsync(string id, CancellationToken cancellationToken = default) =>
-        _lists.GetAsync(id, cancellationToken);
+        _lists.GetAsync(id, partitionKey: id, cancellationToken);
 
     public void Remove(string id) =>
         _lists.Remove(id);

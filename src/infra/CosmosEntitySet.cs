@@ -17,8 +17,8 @@ public class CosmosEntitySet<TEntity> : IEntitySet<TEntity> where TEntity : IEnt
         _unitOfWork.Register(entity);
     }
 
-    public Task<TEntity?> GetAsync(string id, CancellationToken cancellationToken = default) =>
-        _unitOfWork.GetAsync<TEntity>(id, cancellationToken);
+    public Task<TEntity?> GetAsync(string id, string partitionKey, CancellationToken cancellationToken = default) =>
+        _unitOfWork.GetAsync<TEntity>(id, partitionKey, cancellationToken);
 
     public void Remove(string id)
     {

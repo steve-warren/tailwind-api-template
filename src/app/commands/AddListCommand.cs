@@ -28,8 +28,6 @@ public sealed class AddListCommandHandler
             id: ids.NextReminderListId(),
             name: command.Name);
 
-        var list = await reminderLists.FindAsync(id: "rl_2PE4ZvJYCdwBpdICiT2tnG5FocF", cancellationToken);
-
         reminderLists.Add(reminderList);
 
         await unitOfWork.CommitAsync(cancellationToken);

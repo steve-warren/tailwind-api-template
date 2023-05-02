@@ -3,6 +3,6 @@ namespace WarrenSoft.Reminders.Domain;
 public interface IUnitOfWork
 {
     void Register(IEntity entity);
-    Task<TEntity?> GetAsync<TEntity>(string id, CancellationToken cancellationToken = default) where TEntity : IEntity;
+    Task<TEntity?> GetAsync<TEntity>(string id, string partitionKey, CancellationToken cancellationToken = default) where TEntity : IEntity;
     Task CommitAsync(CancellationToken cancellationToken = default);
 }

@@ -46,7 +46,7 @@ builder.Services.AddScoped((sp) =>
 });
 
 builder.Services.AddScoped<IReminderListRepository, CosmosReminderListRepository>();
-builder.Services.AddScoped<IReminderRepository, InMemoryReminderRepository>();
+builder.Services.AddScoped<IReminderRepository, CosmosReminderRepository>();
 builder.Services.AddScoped<IPlanRepository, InMemoryPlanRepository>();
 var app = builder.Build();
 

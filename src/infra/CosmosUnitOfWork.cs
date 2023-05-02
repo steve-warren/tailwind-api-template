@@ -40,12 +40,12 @@ public sealed class CosmosUnitOfWork : IUnitOfWork
         return _container.CreateItemAsync((object)entity, partitionKey, cancellationToken: cancellationToken);
     }
 
-    public async Task<TEntity?> GetAsync<TEntity>(string id, CancellationToken cancellationToken = default) where TEntity : IEntity
+    public async Task<TEntity?> GetAsync<TEntity>(string id, string partitionKey, CancellationToken cancellationToken = default) where TEntity : IEntity
     {
         if (_entities.FirstOrDefault(e => e.Id == id) is TEntity entity)
             return entity;
 
-        var response = await _container.ReadItemAsync<TEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
+        var response = await _container.ReadItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
 
         return response.Resource;
     }

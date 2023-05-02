@@ -19,6 +19,7 @@ public sealed class AddReminderCommandHandler
         [FromBody] AddReminderCommand command,
         [FromServices] IReminderListRepository reminderLists,
         [FromServices] IReminderRepository reminders,
+        [FromServices] IUnitOfWork unitOfWork,
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
@@ -27,12 +28,14 @@ public sealed class AddReminderCommandHandler
         if (reminderList is null)
             return new BadRequestResult();
 
-        if (reminderList.OwnedBy(command.OwnerId) is false)
-            return new BadRequestResult();
+        // if (reminderList.OwnedBy(command.OwnerId) is false)
+        //     return new BadRequestResult();
 
         var reminder = reminderList.CreateReminder(id: ids.NextReminderId(), command.Title, command.Notes, command.DueOn, command.Priority);
 
         reminders.Add(reminder);
+
+        await unitOfWork.CommitAsync(cancellationToken);
 
         return new OkObjectResult(reminder);
     }
