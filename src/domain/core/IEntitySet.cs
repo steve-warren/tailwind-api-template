@@ -1,6 +1,4 @@
-using WarrenSoft.Reminders.Domain;
-
-namespace WarrenSoft.Reminders.Infra;
+namespace WarrenSoft.Reminders.Domain;
 
 public interface IEntitySet<TEntity> where TEntity : IEntity
 {

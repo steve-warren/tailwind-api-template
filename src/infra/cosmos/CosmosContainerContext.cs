@@ -2,7 +2,7 @@ using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Infra;
 
-public sealed class CosmosContainerContext : IContainerContext
+public sealed class CosmosContainerContext : IEntityContext
 {
     private readonly CosmosUnitOfWork _unitOfWork;
 
