@@ -2,12 +2,7 @@ using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Infra;
 
-public interface ICosmosPartitionKeyMap
-{
-    string GetPartitionKey(object entity);
-}
-
-public sealed class CosmosPartitionKeyMap<TEntity> : ICosmosPartitionKeyMap where TEntity : IEntity
+internal sealed class CosmosPartitionKeyMap<TEntity> : ICosmosPartitionKeyMap where TEntity : IEntity
 {
     private readonly Dictionary<Type, Func<TEntity, string>> _map = new();
 
