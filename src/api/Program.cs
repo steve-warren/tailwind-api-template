@@ -29,7 +29,7 @@ builder.Services.AddSingleton((_) =>
     })
 );
 
-builder.Services.AddScoped<IUnitOfWork>((sp) =>
+builder.Services.AddScoped((sp) =>
 {
     var client = sp.GetRequiredService<CosmosClient>();
     var database = client.GetDatabase(builder.Configuration["Cosmos:DatabaseName"]);
@@ -38,9 +38,11 @@ builder.Services.AddScoped<IUnitOfWork>((sp) =>
     return new CosmosUnitOfWork(container);
 });
 
+builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CosmosUnitOfWork>());
 builder.Services.AddScoped<IReminderListRepository, CosmosReminderListRepository>();
 builder.Services.AddScoped<IReminderRepository, CosmosReminderRepository>();
 builder.Services.AddScoped<IPlanRepository, InMemoryPlanRepository>();
+builder.Services.AddScoped<UnitOfWorkMiddleware>();
 
 var app = builder.Build();
 
@@ -51,9 +53,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+app.UseUnitOfWork();
 
 app.Run();

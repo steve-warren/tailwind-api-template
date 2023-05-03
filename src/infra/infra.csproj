@@ -15,4 +15,9 @@
     <PackageReference Include="KsuidDotNet" Version="1.0.1" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.33.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>

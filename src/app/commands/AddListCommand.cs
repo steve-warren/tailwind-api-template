@@ -30,8 +30,6 @@ public sealed class AddListCommandHandler
 
         reminderLists.Add(reminderList);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
         return new OkObjectResult(reminderList.Id);
     }
 }
