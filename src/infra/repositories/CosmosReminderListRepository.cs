@@ -3,7 +3,7 @@ using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Infra;
 
-public sealed class CosmosReminderListRepository : IReminderListRepository
+public sealed class CosmosReminderListRepository : IRepository<ReminderList>
 {
     private readonly EntitySet<ReminderList> _lists;
 

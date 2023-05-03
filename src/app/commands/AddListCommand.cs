@@ -12,25 +12,20 @@ public sealed record AddListCommand(
 [ApiController]
 public sealed class AddListCommandHandler
 {
-    [HttpPost("api/lists")]
-    public IActionResult HandleAsync(
+    [HttpPost("api/user/plans/{planId}/lists")]
+    public async Task<IActionResult> HandleAsync(
         [FromBody] AddListCommand command,
-        [FromServices] IReminderListRepository reminderLists,
+        [FromRoute] string planId,
+        [FromServices] IRepository<Plan> plans,
         [FromServices] IEntityIdentityProvider ids)
     {
-        var plan = new Plan(
-        id: "pl_123",
-        ownerId: command.OwnerId,
-        name: "My Plan",
-        description: "My plan description",
-        startsOn: DateTimeOffset.UtcNow,
-        endsOn: DateTimeOffset.UtcNow.AddDays(7));
+        var plan = await plans.GetAsync(planId);
+        if (plan is null)
+            return new NotFoundResult();
 
         var reminderList = plan.CreateList(
             id: ids.NextReminderListId(),
             name: command.Name);
-
-        reminderLists.Add(reminderList);
 
         return new OkObjectResult(reminderList.Id);
     }

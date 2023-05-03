@@ -15,8 +15,6 @@ public class ReminderList : IAggregateRoot, IEntity, IEventEmitter
         Id = id;
         OwnerId = ownerId;
         Name = name;
-
-        _domainEvents.Add(new ReminderListAddedEvent(this));
     }
 
     public string Id { get; } = null!;

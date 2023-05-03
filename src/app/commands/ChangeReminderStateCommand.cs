@@ -11,7 +11,7 @@ public sealed class ChangeReminderStateCommandHandler
     [HttpPut("api/reminders")]
     public async Task<IActionResult> Handle(
         [FromBody] ChangeReminderStateCommand command,
-        [FromServices] IReminderRepository reminders,
+        [FromServices] IRepository<Reminder> reminders,
         CancellationToken cancellationToken)
     {
         var reminder = await reminders.GetAsync(command.ReminderId, cancellationToken);

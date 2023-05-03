@@ -4,6 +4,11 @@ namespace mock;
 
 public class MockEntityIdentityProvider : IEntityIdentityProvider
 {
+    public string NextAccountPlanId()
+    {
+        return "";
+    }
+
     public string NextPlanId()
     {
         return "";

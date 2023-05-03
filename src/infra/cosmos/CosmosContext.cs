@@ -7,6 +7,8 @@ public class CosmosContext
 {
     private readonly CosmosClient _client;
     private readonly Lazy<CosmosContainer> _reminders;
+    private readonly Lazy<CosmosContainer> _plans;
+    private readonly Lazy<CosmosContainer> _accountPlans;
     private readonly List<Lazy<CosmosContainer>> _containers = new();
 
     public CosmosContext(CosmosClient client, string databaseName)
@@ -15,10 +17,14 @@ public class CosmosContext
         DatabaseName  = databaseName;
 
         _reminders = CreateUnitOfWork("reminders");
+        _plans = CreateUnitOfWork("plans");
+        _accountPlans = CreateUnitOfWork("accountPlans");
     }
 
     public string DatabaseName { get; }
     public CosmosContainer Reminders { get => _reminders.Value; }
+    public CosmosContainer Plans { get => _plans.Value; }
+    public CosmosContainer AccountPlans { get => _accountPlans.Value; }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {

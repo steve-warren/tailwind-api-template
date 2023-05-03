@@ -22,6 +22,7 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
         Description = description;
         StartsOn = startsOn;
         EndsOn = endsOn;
+        NumberOfLists = 0;
     }
 
     public string Id { get; }
@@ -30,6 +31,7 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
     public string Description { get; }
     public DateTimeOffset StartsOn { get; }
     public DateTimeOffset EndsOn { get; }
+    public int NumberOfLists { get; private set; }
 
     List<IDomainEvent> IEventEmitter.DomainEvents => _domainEvents;
 
@@ -39,6 +41,10 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
             id: id,
             ownerId: OwnerId,
             name: name);
+
+        ++NumberOfLists;
+
+        _domainEvents.Add(new ReminderListCreatedEvent(list));
 
         return list;
     }

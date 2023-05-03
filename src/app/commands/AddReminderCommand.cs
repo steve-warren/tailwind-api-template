@@ -17,8 +17,8 @@ public sealed class AddReminderCommandHandler
     [HttpPost("api/reminders")]
     public async Task<IActionResult> HandleAsync(
         [FromBody] AddReminderCommand command,
-        [FromServices] IReminderListRepository reminderLists,
-        [FromServices] IReminderRepository reminders,
+        [FromServices] IRepository<ReminderList> reminderLists,
+        [FromServices] IRepository<Reminder> reminders,
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
