@@ -4,5 +4,6 @@ public interface IUnitOfWork
 {
     void Register(IEntity entity);
     Task<TEntity?> GetAsync<TEntity>(string id, string partitionKey, CancellationToken cancellationToken = default) where TEntity : IEntity;
-    Task CommitAsync(CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    EntitySet<TEntity> Set<TEntity>() where TEntity : IEntity;
 }

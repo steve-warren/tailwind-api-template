@@ -35,7 +35,7 @@ public sealed class AddReminderCommandHandler
 
         reminders.Add(reminder);
 
-        await unitOfWork.CommitAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new OkObjectResult(reminder);
     }

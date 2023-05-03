@@ -1,13 +1,12 @@
-using Microsoft.Azure.Cosmos;
 using WarrenSoft.Reminders.Domain;
 
-namespace WarrenSoft.Reminders.Infra;
+namespace WarrenSoft.Reminders.Domain;
 
-public class CosmosEntitySet<TEntity> : IEntitySet<TEntity> where TEntity : IEntity
+public class EntitySet<TEntity> : IEntitySet<TEntity> where TEntity : IEntity
 {
-    private readonly CosmosUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CosmosEntitySet(CosmosUnitOfWork unitOfWork)
+    public EntitySet(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }

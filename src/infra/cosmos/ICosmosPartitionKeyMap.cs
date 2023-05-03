@@ -1,6 +1,8 @@
+using Microsoft.Azure.Cosmos;
+
 namespace WarrenSoft.Reminders.Infra;
 
 internal interface ICosmosPartitionKeyMap
 {
-    string GetPartitionKey(object entity);
+    PartitionKey GetPartitionKey(object entity);
 }

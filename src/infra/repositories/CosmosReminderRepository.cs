@@ -4,12 +4,10 @@ namespace WarrenSoft.Reminders.Infra;
 
 public sealed class CosmosReminderRepository : IReminderRepository
 {
-    private readonly CosmosEntitySet<Reminder> _reminders;
+    private readonly EntitySet<Reminder> _reminders;
 
-    public CosmosReminderRepository(CosmosContainerContext context)
-    {
-        _reminders = context.Reminders;
-    }
+    public CosmosReminderRepository(CosmosUnitOfWork unitOfWork) =>
+        _reminders = unitOfWork.Set<Reminder>(reminder => reminder.Id);
 
     public void Add(Reminder reminder) =>
         _reminders.Add(reminder);

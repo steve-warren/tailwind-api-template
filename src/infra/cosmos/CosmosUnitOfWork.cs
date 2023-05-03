@@ -5,9 +5,9 @@ namespace WarrenSoft.Reminders.Infra;
 
 public sealed class CosmosUnitOfWork : IUnitOfWork
 {
-    private readonly HashSet<IEntity> _entities = new(EntityIdentityEqualityComparer.Instance);
-    private readonly Container _container;
+    private readonly HashSet<IEntity> _identityMap = new(EntityIdentityEqualityComparer.Instance);
     private readonly Dictionary<Type, ICosmosPartitionKeyMap> _partitionKeyMap = new();
+    private readonly Container _container;
     
     public CosmosUnitOfWork(Container container)
     {
@@ -16,33 +16,23 @@ public sealed class CosmosUnitOfWork : IUnitOfWork
 
     internal Container Container => _container;
 
-    internal void MapPartitionKey<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // todo - check for existing map
-        var map = new CosmosPartitionKeyMap<TEntity>();
-
-        map.MapEntity(partitionKeySelector);
-
-        _partitionKeyMap.Add(typeof(TEntity), map);
-    }
-
-    public Task CommitAsync(CancellationToken cancellationToken = default)
-    {
-        if (_entities.Count == 0)
+        if (_identityMap.Count == 0)
         {
             return Task.CompletedTask;
         }
 
-        var entity = _entities.First();
+        var entity = _identityMap.First();
 
-        var partitionKey = new PartitionKey(_partitionKeyMap[entity.GetType()].GetPartitionKey(entity));
+        var partitionKey = _partitionKeyMap[entity.GetType()].GetPartitionKey(entity);
 
         return _container.CreateItemAsync((object)entity, partitionKey, cancellationToken: cancellationToken);
     }
 
     public async Task<TEntity?> GetAsync<TEntity>(string id, string partitionKey, CancellationToken cancellationToken = default) where TEntity : IEntity
     {
-        if (_entities.FirstOrDefault(e => e.Id == id) is TEntity entity)
+        if (_identityMap.FirstOrDefault(e => e.Id == id) is TEntity entity)
             return entity;
 
         var response = await _container.ReadItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
@@ -51,5 +41,21 @@ public sealed class CosmosUnitOfWork : IUnitOfWork
     }
 
     public void Register(IEntity entity) =>
-        _entities.Add(entity);
+        _identityMap.Add(entity);
+
+    public EntitySet<TEntity> Set<TEntity>() where TEntity : IEntity =>
+        new(this);
+    
+    public EntitySet<TEntity> Set<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity
+    {
+        MapPartitionKey(partitionKeySelector);
+
+        return Set<TEntity>();
+    }
+
+    private void MapPartitionKey<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity
+    {
+        if (!_partitionKeyMap.TryGetValue(typeof(TEntity), out var map))
+            _partitionKeyMap.Add(typeof(TEntity), new CosmosPartitionKeyMap<TEntity>(partitionKeySelector));
+    }
 }

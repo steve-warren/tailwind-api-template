@@ -38,16 +38,10 @@ builder.Services.AddScoped<IUnitOfWork>((sp) =>
     return new CosmosUnitOfWork(container);
 });
 
-builder.Services.AddScoped((sp) =>
-{
-    var unitOfWork = sp.GetRequiredService<IUnitOfWork>();
-
-    return new CosmosContainerContext((CosmosUnitOfWork)unitOfWork);
-});
-
 builder.Services.AddScoped<IReminderListRepository, CosmosReminderListRepository>();
 builder.Services.AddScoped<IReminderRepository, CosmosReminderRepository>();
 builder.Services.AddScoped<IPlanRepository, InMemoryPlanRepository>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
