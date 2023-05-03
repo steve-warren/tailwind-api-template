@@ -3,6 +3,7 @@ using WarrenSoft.Reminders.Domain;
 using WarrenSoft.Reminders.Infra;
 using Microsoft.Azure.Cosmos;
 using System.Text.Json;
+using Warrensoft.Reminders.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,17 +33,14 @@ builder.Services.AddSingleton((_) =>
 builder.Services.AddScoped((sp) =>
 {
     var client = sp.GetRequiredService<CosmosClient>();
-    var database = client.GetDatabase(builder.Configuration["Cosmos:DatabaseName"]);
-    var container = database.GetContainer(builder.Configuration["Cosmos:ContainerName"]);
-
-    return new CosmosUnitOfWork(container);
+    return new CosmosContext(client, databaseName: builder.Configuration["Cosmos:DatabaseName"]!);
 });
 
-builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CosmosUnitOfWork>());
+builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CosmosContainer>());
 builder.Services.AddScoped<IReminderListRepository, CosmosReminderListRepository>();
 builder.Services.AddScoped<IReminderRepository, CosmosReminderRepository>();
 builder.Services.AddScoped<IPlanRepository, InMemoryPlanRepository>();
-builder.Services.AddScoped<UnitOfWorkMiddleware>();
+builder.Services.AddScoped<CosmosContextMiddleware>();
 
 var app = builder.Build();
 

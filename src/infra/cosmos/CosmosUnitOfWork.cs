@@ -3,13 +3,13 @@ using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Infra;
 
-public sealed class CosmosUnitOfWork : IUnitOfWork
+public sealed class CosmosContainer : IUnitOfWork
 {
     private readonly HashSet<IEntity> _identityMap = new(EntityIdentityEqualityComparer.Instance);
     private readonly Dictionary<Type, ICosmosPartitionKeyMap> _partitionKeyMap = new();
     private readonly Container _container;
     
-    public CosmosUnitOfWork(Container container)
+    public CosmosContainer(Container container)
     {
         _container = container;
     }
@@ -43,14 +43,14 @@ public sealed class CosmosUnitOfWork : IUnitOfWork
     public void Register(IEntity entity) =>
         _identityMap.Add(entity);
 
-    public EntitySet<TEntity> Set<TEntity>() where TEntity : IEntity =>
+    public EntitySet<TEntity> Entity<TEntity>() where TEntity : IEntity =>
         new(this);
     
-    public EntitySet<TEntity> Set<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity
+    public EntitySet<TEntity> Entity<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity
     {
         MapPartitionKey(partitionKeySelector);
 
-        return Set<TEntity>();
+        return Entity<TEntity>();
     }
 
     private void MapPartitionKey<TEntity>(Func<TEntity, string> partitionKeySelector) where TEntity : IEntity

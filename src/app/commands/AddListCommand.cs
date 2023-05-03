@@ -3,18 +3,20 @@ using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Http;
 
-public sealed record AddListCommand(string OwnerId, string Name, string ColorId, string EmojiId);
+public sealed record AddListCommand(
+    string OwnerId,
+    string Name,
+    string ColorId,
+    string EmojiId);
 
 [ApiController]
 public sealed class AddListCommandHandler
 {
     [HttpPost("api/lists")]
-    public async Task<IActionResult> Handle(
+    public IActionResult HandleAsync(
         [FromBody] AddListCommand command,
         [FromServices] IReminderListRepository reminderLists,
-        [FromServices] IEntityIdentityProvider ids,
-        [FromServices] IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        [FromServices] IEntityIdentityProvider ids)
     {
         var plan = new Plan(
         id: "pl_123",

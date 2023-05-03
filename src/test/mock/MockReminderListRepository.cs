@@ -14,7 +14,7 @@ public class MockReminderListRepository : IReminderListRepository
 
     public void Add(ReminderList list) => _reminderLists.Add(list);
 
-    public Task<ReminderList?> FindAsync(string id, CancellationToken cancellationToken = default) => Task.FromResult(_reminderLists.FirstOrDefault(list => list.Id == id));
+    public Task<ReminderList?> GetAsync(string id, CancellationToken cancellationToken = default) => Task.FromResult(_reminderLists.FirstOrDefault(list => list.Id == id));
 
     public void Remove(string id) => _reminderLists.RemoveAll(list => list.Id == id);
 }

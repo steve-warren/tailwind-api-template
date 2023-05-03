@@ -14,7 +14,7 @@ public sealed class ChangeReminderStateCommandHandler
         [FromServices] IReminderRepository reminders,
         CancellationToken cancellationToken)
     {
-        var reminder = await reminders.GetByIdAsync(command.ReminderId, cancellationToken);
+        var reminder = await reminders.GetAsync(command.ReminderId, cancellationToken);
 
         if (reminder is null)
             return new NotFoundResult();
