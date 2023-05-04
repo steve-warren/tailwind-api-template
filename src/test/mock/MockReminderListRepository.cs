@@ -2,7 +2,7 @@
 
 namespace mock;
 
-public class MockReminderListRepository : IReminderListRepository
+public class MockReminderListRepository : IRepository<ReminderList>
 {
     private readonly List<ReminderList> _reminderLists = new();
 

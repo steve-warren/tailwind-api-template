@@ -19,9 +19,7 @@ public sealed class CosmosContainer : IUnitOfWork
     public Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         if (_identityMap.Count == 0)
-        {
             return Task.CompletedTask;
-        }
 
         var entity = _identityMap.First();
 

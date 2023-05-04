@@ -6,11 +6,11 @@ namespace WarrenSoft.Reminders.Infra;
 
 public sealed class CosmosJsonSerializer : CosmosSerializer
 {
-    private readonly JsonObjectSerializer systemTextJsonSerializer;
+    private readonly JsonObjectSerializer _systemTextJsonSerializer;
 
     public CosmosJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
-        this.systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
+        this._systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
     }
 
     public override T FromStream<T>(Stream stream)
@@ -28,14 +28,14 @@ public sealed class CosmosJsonSerializer : CosmosSerializer
                 return (T)(object)stream;
             }
 
-            return (T)this.systemTextJsonSerializer.Deserialize(stream, typeof(T), default);
+            return (T)this._systemTextJsonSerializer.Deserialize(stream, typeof(T), default);
         }
     }
 
     public override Stream ToStream<T>(T input)
     {
         MemoryStream streamPayload = new();
-        this.systemTextJsonSerializer.Serialize(streamPayload, input, input.GetType(), default);
+        this._systemTextJsonSerializer.Serialize(streamPayload, input, input.GetType(), default);
         streamPayload.Position = 0;
         return streamPayload;
     }

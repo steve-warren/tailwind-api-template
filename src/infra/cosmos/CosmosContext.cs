@@ -22,9 +22,9 @@ public class CosmosContext
     }
 
     public string DatabaseName { get; }
-    public CosmosContainer Reminders { get => _reminders.Value; }
-    public CosmosContainer Plans { get => _plans.Value; }
-    public CosmosContainer AccountPlans { get => _accountPlans.Value; }
+    public CosmosContainer Reminders => _reminders.Value;
+    public CosmosContainer Plans => _plans.Value;
+    public CosmosContainer AccountPlans => _accountPlans.Value;
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
