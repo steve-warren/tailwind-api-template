@@ -1,29 +1,37 @@
 using System.Net;
 using Microsoft.Azure.Cosmos;
+using WarrenSoft.Reminders.Domain;
 
 namespace Warrensoft.Reminders.Infra;
 
-public record Foo(string Id);
+public class Account: IEntity
+{
+    public string Id { get; init; }
+    public string Name { get; set; }
+}
 
-public class FooSet
+public record AccountCreatedEvent : IDomainEvent;
+
+// Similar to DbSet
+public class AccountContainer
 {
     private readonly Dictionary<string, EntityEntry> _entries = new();
     private readonly Container _container = null!;
-    private readonly Func<Foo, string?> _partitionKeySelector = null!;
+    private readonly Func<Account, string?> _partitionKeySelector = null!;
 
-    public FooSet(Container container, Func<Foo, string?> partitionKeySelector)
+    public AccountContainer(Container container, Func<Account, string?> partitionKeySelector)
     {
         _container = container;
         _partitionKeySelector = partitionKeySelector;
     }
 
-    public async ValueTask<Foo?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
+    public async ValueTask<Account?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
     {
         _entries.TryGetValue(key: id, out var entry);
 
         if (entry is null) // see EntityFinder.FindAsync
         {
-            var response = await _container.ReadItemAsync<Foo>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
+            var response = await _container.ReadItemAsync<Account>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
 
             entry = response.StatusCode switch
             {
@@ -38,12 +46,12 @@ public class FooSet
         return entry?.Entity;
     }
 
-    public void Add(Foo entity)
+    public void Add(Account entity)
     {
         _entries.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Added });
     }
 
-    public void Remove(Foo entity)
+    public void Remove(Account entity)
     {
         _entries.TryGetValue(key: entity.Id, out var entry);
 
@@ -51,7 +59,7 @@ public class FooSet
             entry.State = EntityState.Removed;
     }
 
-    public void Update(Foo entity)
+    public void Update(Account entity)
     {
         _entries.TryGetValue(key: entity.Id, out var entry);
 
@@ -59,10 +67,13 @@ public class FooSet
             entry.State = EntityState.Modified;
     }
 
-    public void Attach(Foo entity)
+    public void Attach(Account entity)
     {
         _entries.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Detached });
     }
+
+    public void Clear() =>
+        _entries.Clear();
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -117,7 +128,7 @@ public class FooSet
 
         var response = await _container.CreateItemAsync(entry.Entity, partitionKey, cancellationToken: cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        if (response.StatusCode == HttpStatusCode.Created)
             entry.State = EntityState.Unchanged;
     }
 
@@ -126,10 +137,13 @@ public class FooSet
         string? partitionKeyValue = _partitionKeySelector(entry.Entity);
         PartitionKey partitionKey = partitionKeyValue is null ? PartitionKey.Null : new PartitionKey(partitionKeyValue);
 
-        var response = await _container.DeleteItemAsync<Foo>(id: entry.Entity.Id, partitionKey: partitionKey, cancellationToken: cancellationToken);
+        var response = await _container.DeleteItemAsync<Account>(id: entry.Entity.Id, partitionKey: partitionKey, cancellationToken: cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.OK)
+        if (response.StatusCode == HttpStatusCode.NoContent)
+        {
             entry.State = EntityState.Unchanged;
+            _entries.Remove(key: entry.Entity.Id);
+        }
     }
 
     private async Task UpdateSingleAsync(EntityEntry entry, CancellationToken cancellationToken)
@@ -154,7 +168,7 @@ public class FooSet
 
     private sealed class EntityEntry
     {
-        public Foo Entity { get; init; } = null!;
+        public Account Entity { get; init; } = null!;
         public EntityState State { get; set; } = EntityState.Unchanged;
     }
 }
