@@ -2,38 +2,28 @@ using KsuidDotNet;
 using Microsoft.AspNetCore.Mvc;
 using Warrensoft.Reminders.Infra;
 
-namespace Warrensoft.Reminders.App;
-
-public record UpsertAccountCommand(string? Id);
-
-[ApiController]
-public sealed class CreateAndReadAccountCommandHandler
+namespace app.commands
 {
-    [HttpPost("api/accounts")]
-    public async Task<IActionResult> Handle(
-        [FromBody] UpsertAccountCommand command,
-        [FromServices] CosmosEntityContainer<Account> container,
-        CancellationToken cancellationToken)
+    public record UpsertAccountCommand(string? Id);
+
+    [ApiController]
+    public sealed class CreateAndReadAccountCommandHandler
     {
-        var account = command.Id is null ? new Account { Id = Ksuid.NewKsuid("a_"), Name = "Foo" }
-                                         : (await container.FindAsync(command.Id, command.Id, cancellationToken));
+        [HttpPost("api/accounts")]
+        public async Task<IActionResult> Handle(
+            [FromBody] UpsertAccountCommand command,
+            [FromServices] CosmosEntityContainer<Account> container,
+            CancellationToken cancellationToken)
+        {
+            Account? account  = new Account { Id = Ksuid.NewKsuid("a_"), Name = "Foo", PartitionKey = "foo" };
 
-        container.Add(account);
+            account.Foo();
 
-        await container.SaveChangesAsync(cancellationToken);
+            container.Add(account);
 
-        account = await container.FindAsync(id: account.Id, partitionKey: "a_", cancellationToken);
+            await container.SaveChangesAsync(cancellationToken);
 
-        account.Name = "Bar";
-
-        container.Update(account);
-
-        await container.SaveChangesAsync(cancellationToken);
-
-        container.Remove(account);
-
-        await container.SaveChangesAsync(cancellationToken);
-
-        return new OkResult();
+            return new OkResult();
+        }
     }
 }

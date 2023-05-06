@@ -40,9 +40,9 @@ builder.Services.AddScoped((sp) =>
 builder.Services.AddScoped((sp) =>
 {
     var client = sp.GetRequiredService<CosmosClient>();
-    var container = client.GetContainer(builder.Configuration["Cosmos:DatabaseName"]!, builder.Configuration["Cosmos:ContainerName"]!);
+    var container = client.GetContainer(builder.Configuration["Cosmos:DatabaseName"]!, "accounts");
 
-    return new CosmosEntityContainer<Account>(container, (account) => account.Id);
+    return new CosmosEntityContainer<Account>(container, (account) => account.PartitionKey);
 });
 
 builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CosmosContainer>());

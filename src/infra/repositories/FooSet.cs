@@ -1,4 +1,6 @@
 using System.Net;
+using System.Text.Json.Serialization;
+using KsuidDotNet;
 using Microsoft.Azure.Cosmos;
 using WarrenSoft.Reminders.Domain;
 
@@ -8,7 +10,9 @@ public class Account: IEntity, IEventEmitter
 {
     public string Id { get; init; }
     public string Name { get; set; }
+    public string PartitionKey { get; set; }
 
+    [JsonIgnore]
     public List<IDomainEvent> DomainEvents { get; } = new();
 
     public void Foo() =>
@@ -38,14 +42,21 @@ public class CosmosEntityContainer<TEntity> where TEntity : class, IEntity
 
         if (entry is null) // see EntityFinder.FindAsync
         {
-            var response = await _container.ReadItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
-
-            entry = response.StatusCode switch
+            try
             {
-                HttpStatusCode.OK => new EntityEntry { Entity = response.Resource, State = EntityState.Unchanged },
-                HttpStatusCode.NotFound => new EntityEntry { Entity = null!, State = EntityState.Unchanged },
-                _ => throw new NotImplementedException()
-            };
+                var response = await _container.ReadItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                    entry = new EntityEntry { Entity = response.Resource, State = EntityState.Unchanged };
+                
+                else
+                    throw new InvalidOperationException();
+            }
+
+            catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                entry = new EntityEntry { Entity = null!, State = EntityState.Unchanged };
+            }
 
             _entryMap.Add(key: id, value: entry);
         }
@@ -139,19 +150,13 @@ public class CosmosEntityContainer<TEntity> where TEntity : class, IEntity
 
     private async Task SaveOneorMoreWithEventsAsync(CancellationToken cancellationToken)
     {
-        var partitionKey = GetPartitionKey(Entries.First());
+        var partitionKey = _partitionKeySelector((TEntity)Entries.First().Entity);
 
-        var transaction = _container.CreateTransactionalBatch(partitionKey);
+        var transaction = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
 
         foreach(var entry in Entries)
         {
             var entity = entry.Entity;
-
-            if (entity is IEventEmitter emitter)
-            {
-                foreach(var domainEvent in emitter.DomainEvents)
-                    transaction.CreateItem(domainEvent);
-            }
 
             switch(entry.State)
             {
@@ -165,7 +170,13 @@ public class CosmosEntityContainer<TEntity> where TEntity : class, IEntity
                     transaction.DeleteItem(entity.Id);
                     break;
                 default:
-                    throw new NotImplementedException();
+                    break;
+            }
+
+            if (entity is IEventEmitter emitter)
+            {
+                foreach(object domainEvent in emitter.DomainEvents)
+                    transaction.CreateItem(new { Id = Ksuid.NewKsuid("ev_"), domainEvent, PartitionKey = partitionKey });
             }
         }
 
