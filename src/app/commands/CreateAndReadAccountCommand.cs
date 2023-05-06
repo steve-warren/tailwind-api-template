@@ -12,7 +12,7 @@ public sealed class CreateAndReadAccountCommandHandler
     [HttpPost("api/accounts")]
     public async Task<IActionResult> Handle(
         [FromBody] UpsertAccountCommand command,
-        [FromServices] AccountContainer container,
+        [FromServices] CosmosEntityContainer<Account> container,
         CancellationToken cancellationToken)
     {
         var account = command.Id is null ? new Account { Id = Ksuid.NewKsuid("a_"), Name = "Foo" }
