@@ -37,14 +37,6 @@ builder.Services.AddScoped((sp) =>
     return new CosmosContext(client, databaseName: builder.Configuration["Cosmos:DatabaseName"]!);
 });
 
-builder.Services.AddScoped((sp) =>
-{
-    var client = sp.GetRequiredService<CosmosClient>();
-    var container = client.GetContainer(builder.Configuration["Cosmos:DatabaseName"]!, "accounts");
-
-    return new CosmosEntityContainer<Account>(container, (account) => account.PartitionKey);
-});
-
 builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CosmosContainer>());
 builder.Services.AddScoped<IRepository<ReminderList>, CosmosReminderListRepository>();
 builder.Services.AddScoped<IRepository<Reminder>, CosmosReminderRepository>();
