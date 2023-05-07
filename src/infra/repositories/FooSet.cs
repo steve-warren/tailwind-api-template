@@ -6,13 +6,13 @@ using WarrenSoft.Reminders.Domain;
 namespace Warrensoft.Reminders.Infra;
 
 // Similar to DbSet
-public class CosmosEntityContainer<TAggregateRoot> where TAggregateRoot : class, IAggregateRoot
+public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot : class, IAggregateRoot
 {
     private readonly Dictionary<string, EntityEntry> _entryMap = new();
     private readonly Container _container = null!;
     private readonly Func<TAggregateRoot, string?> _partitionKeySelector = null!;
 
-    public CosmosEntityContainer(Container container, Func<TAggregateRoot, string?> partitionKeySelector)
+    public CosmosAggregateRootContainer(Container container, Func<TAggregateRoot, string?> partitionKeySelector)
     {
         _container = container;
         _partitionKeySelector = partitionKeySelector;
