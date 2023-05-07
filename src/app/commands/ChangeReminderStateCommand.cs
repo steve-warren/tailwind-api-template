@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Warrensoft.Reminders.Infra;
 using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Http;
@@ -11,10 +12,10 @@ public sealed class ChangeReminderStateCommandHandler
     [HttpPut("api/reminders")]
     public async Task<IActionResult> Handle(
         [FromBody] ChangeReminderStateCommand command,
-        [FromServices] IRepository<Reminder> reminders,
+        [FromServices] CosmosContext context,
         CancellationToken cancellationToken)
     {
-        var reminder = await reminders.GetAsync(command.ReminderId, cancellationToken);
+        var reminder = await context.Reminders.FindAsync(command.ReminderId, command.OwnerId, cancellationToken);
 
         if (reminder is null)
             return new NotFoundResult();

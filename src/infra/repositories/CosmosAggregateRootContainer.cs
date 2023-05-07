@@ -6,13 +6,13 @@ using WarrenSoft.Reminders.Domain;
 namespace Warrensoft.Reminders.Infra;
 
 // Similar to DbSet
-public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot : class, IAggregateRoot
+public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class, IAggregateRoot
 {
     private readonly Dictionary<string, EntityEntry> _entryMap = new();
     private readonly Container _container = null!;
-    private readonly Func<TAggregateRoot, string?> _partitionKeySelector = null!;
+    private readonly Func<TDocument, string?> _partitionKeySelector = null!;
 
-    public CosmosAggregateRootContainer(Container container, Func<TAggregateRoot, string?> partitionKeySelector)
+    public CosmosContainerSet(Container container, Func<TDocument, string?> partitionKeySelector)
     {
         _container = container;
         _partitionKeySelector = partitionKeySelector;
@@ -20,7 +20,7 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
 
     private IEnumerable<EntityEntry> Entries => _entryMap.Values;
 
-    public async ValueTask<TAggregateRoot?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
+    public async ValueTask<TDocument?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
     {
         _entryMap.TryGetValue(key: id, out var entry);
 
@@ -28,7 +28,7 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
         {
             try
             {
-                var response = await _container.ReadItemAsync<TAggregateRoot>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
+                var response = await _container.ReadItemAsync<TDocument>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                     entry = new EntityEntry { Entity = response.Resource, State = EntityState.Unchanged };
@@ -45,15 +45,15 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
             _entryMap.Add(key: id, value: entry);
         }
 
-        return (TAggregateRoot?) entry?.Entity;
+        return (TDocument?) entry?.Entity;
     }
 
-    public void Add(TAggregateRoot entity)
+    public void Add(TDocument entity)
     {
         _entryMap.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Added });
     }
 
-    public void Remove(TAggregateRoot entity)
+    public void Remove(TDocument entity)
     {
         _entryMap.TryGetValue(key: entity.Id, out var entry);
 
@@ -61,7 +61,7 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
             entry.State = EntityState.Removed;
     }
 
-    public void Update(TAggregateRoot entity)
+    public void Update(TDocument entity)
     {
         _entryMap.TryGetValue(key: entity.Id, out var entry);
 
@@ -69,7 +69,7 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
             entry.State = EntityState.Modified;
     }
 
-    public void Attach(TAggregateRoot entity)
+    public void Attach(TDocument entity)
     {
         _entryMap.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Detached });
     }
@@ -84,7 +84,7 @@ public class CosmosAggregateRootContainer<TAggregateRoot> where TAggregateRoot :
 
         foreach (var entry in Entries)
         {
-            var entity = (TAggregateRoot)entry.Entity;
+            var entity = (TDocument)entry.Entity;
             var partitionKey = _partitionKeySelector(entity);
             var transaction = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
 

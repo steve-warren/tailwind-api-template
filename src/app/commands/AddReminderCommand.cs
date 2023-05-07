@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Warrensoft.Reminders.Infra;
 using WarrenSoft.Reminders.Domain;
 
 namespace WarrenSoft.Reminders.Http;
@@ -17,19 +18,18 @@ public sealed class AddReminderCommandHandler
     [HttpPost("api/reminders")]
     public async Task<IActionResult> HandleAsync(
         [FromBody] AddReminderCommand command,
-        [FromServices] IRepository<ReminderList> reminderLists,
-        [FromServices] IRepository<Reminder> reminders,
+        [FromServices] CosmosContext context,
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
-        var reminderList = await reminderLists.GetAsync(id: command.ListId, cancellationToken);
+        var reminderList = await context.ReminderLists.FindAsync(id: command.ListId, partitionKey: command.ListId, cancellationToken);
 
         if (reminderList is null)
             return new BadRequestResult();
 
         var reminder = reminderList.CreateReminder(id: ids.NextReminderId(), command.Title, command.Notes, command.DueOn, command.Priority);
 
-        reminders.Add(reminder);
+        context.Reminders.Add(reminder);
 
         return new OkObjectResult(reminder);
     }

@@ -12,16 +12,13 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
         string id,
         string ownerId,
         string name,
-        string description,
-        DateTimeOffset startsOn,
-        DateTimeOffset endsOn)
+        string description)
     {
         Id = id;
+        PartitionKey = id;
         OwnerId = ownerId;
         Name = name;
         Description = description;
-        StartsOn = startsOn;
-        EndsOn = endsOn;
         NumberOfLists = 0;
     }
 
@@ -29,9 +26,8 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
     public string OwnerId { get; }
     public string Name { get; }
     public string Description { get; }
-    public DateTimeOffset StartsOn { get; }
-    public DateTimeOffset EndsOn { get; }
     public int NumberOfLists { get; private set; }
+    public string PartitionKey { get; }
 
     List<IDomainEvent> IEventEmitter.DomainEvents => _domainEvents;
 
