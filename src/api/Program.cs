@@ -4,20 +4,19 @@ using WarrenSoft.Reminders.Infra;
 using Microsoft.Azure.Cosmos;
 using System.Text.Json;
 using Warrensoft.Reminders.Infra;
-using Warrensoft.Reminders.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-builder.Services.AddControllers()
+services.AddCosmosContext();
+services.AddEventProcessorWorkers();
+
+services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new ReminderPriorityJsonConverter()
 ));
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<IEntityIdentityProvider, KsuidEntityIdentityProvider>();
-
-builder.Services.AddSingleton((_) =>
+services.AddSingleton<IEntityIdentityProvider, KsuidEntityIdentityProvider>();
+services.AddSingleton<CosmosClient>((_) =>
     new CosmosClient(builder.Configuration["Cosmos:ConnectionString"], new CosmosClientOptions()
     {
         Serializer = new CosmosJsonSerializer(new JsonSerializerOptions()
@@ -31,13 +30,11 @@ builder.Services.AddSingleton((_) =>
     })
 );
 
-builder.Services.AddScoped((sp) =>
+if (builder.Environment.IsDevelopment())
 {
-    var client = sp.GetRequiredService<CosmosClient>();
-    return new CosmosContext(client, databaseName: builder.Configuration["Cosmos:DatabaseName"]!);
-});
-
-builder.Services.AddScoped<CosmosContextMiddleware>();
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+}
 
 var app = builder.Build();
 
