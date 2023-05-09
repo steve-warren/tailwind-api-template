@@ -12,14 +12,15 @@ public class Plan : IAggregateRoot, IEntity, IEventEmitter
         string id,
         string ownerId,
         string name,
-        string description)
+        string description,
+        int numberOfLists)
     {
         Id = id;
         PartitionKey = id;
         OwnerId = ownerId;
         Name = name;
         Description = description;
-        NumberOfLists = 0;
+        NumberOfLists = numberOfLists;
     }
 
     public string Id { get; }

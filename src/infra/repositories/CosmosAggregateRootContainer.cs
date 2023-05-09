@@ -6,13 +6,13 @@ using WarrenSoft.Reminders.Domain;
 namespace Warrensoft.Reminders.Infra;
 
 // Similar to DbSet
-public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class, IAggregateRoot
+public class CosmosContainerSet<TAggregate> : IUnitOfWork where TAggregate : class, IAggregateRoot
 {
     private readonly Dictionary<string, EntityEntry> _entryMap = new();
     private readonly Container _container = null!;
-    private readonly Func<TDocument, string?> _partitionKeySelector = null!;
+    private readonly Func<TAggregate, string?> _partitionKeySelector = null!;
 
-    public CosmosContainerSet(Container container, Func<TDocument, string?> partitionKeySelector)
+    public CosmosContainerSet(Container container, Func<TAggregate, string?> partitionKeySelector)
     {
         _container = container;
         _partitionKeySelector = partitionKeySelector;
@@ -20,7 +20,7 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
 
     private IEnumerable<EntityEntry> Entries => _entryMap.Values;
 
-    public async ValueTask<TDocument?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
+    public async ValueTask<TAggregate?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
     {
         _entryMap.TryGetValue(key: id, out var entry);
 
@@ -28,7 +28,7 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
         {
             try
             {
-                var response = await _container.ReadItemAsync<TDocument>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
+                var response = await _container.ReadItemAsync<TAggregate>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                     entry = new EntityEntry { Entity = response.Resource, State = EntityState.Unchanged };
@@ -45,15 +45,15 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
             _entryMap.Add(key: id, value: entry);
         }
 
-        return (TDocument?) entry?.Entity;
+        return (TAggregate?) entry?.Entity;
     }
 
-    public void Add(TDocument entity)
+    public void Add(TAggregate entity)
     {
         _entryMap.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Added });
     }
 
-    public void Remove(TDocument entity)
+    public void Remove(TAggregate entity)
     {
         _entryMap.TryGetValue(key: entity.Id, out var entry);
 
@@ -61,7 +61,7 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
             entry.State = EntityState.Removed;
     }
 
-    public void Update(TDocument entity)
+    public void Update(TAggregate entity)
     {
         _entryMap.TryGetValue(key: entity.Id, out var entry);
 
@@ -69,7 +69,7 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
             entry.State = EntityState.Modified;
     }
 
-    public void Attach(TDocument entity)
+    public void Attach(TAggregate entity)
     {
         _entryMap.TryAdd(key: entity.Id, value: new EntityEntry { Entity = entity, State = EntityState.Detached });
     }
@@ -84,7 +84,7 @@ public class CosmosContainerSet<TDocument> : IUnitOfWork where TDocument : class
 
         foreach (var entry in Entries)
         {
-            var entity = (TDocument)entry.Entity;
+            var entity = (TAggregate)entry.Entity;
             var partitionKey = _partitionKeySelector(entity);
             var transaction = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
 
