@@ -29,6 +29,7 @@ services.AddSingleton<CosmosClient>((_) =>
         })
     })
 );
+services.AddScoped<CosmosContextMiddleware>();
 
 if (builder.Environment.IsDevelopment())
 {

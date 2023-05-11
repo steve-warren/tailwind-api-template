@@ -21,7 +21,7 @@ public sealed class AddListCommandHandler
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
-        var plan = await context.Plans.FindAsync(planId, command.OwnerId, cancellationToken);
+        var plan = await context.Plans.FindAsync(id: planId, partitionKey: command.OwnerId, cancellationToken);
         if (plan is null)
             return new NotFoundResult();
 

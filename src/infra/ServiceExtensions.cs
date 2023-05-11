@@ -10,7 +10,6 @@ public static class ServiceExtensions
     public static IServiceCollection AddEventProcessorWorkers(this IServiceCollection services)
     {
         services.AddHostedService<CosmosChangeFeedWorker>();
-        services.AddHostedService<AzureServiceBusWorker>();
         return services;
     }
 
