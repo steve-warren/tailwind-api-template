@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace WarrenSoft.Reminders.Domain;
+namespace Warrensoft.Reminders.Domain;
 
 public interface IEventEmitter
 {

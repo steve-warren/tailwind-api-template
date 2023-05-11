@@ -1,3 +1,3 @@
-namespace WarrenSoft.Reminders.Domain;
+namespace Warrensoft.Reminders.Domain;
 
 public interface IDomainEvent { }

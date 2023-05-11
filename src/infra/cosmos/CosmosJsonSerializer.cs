@@ -2,7 +2,7 @@ using System.Text.Json;
 using Azure.Core.Serialization;
 using Microsoft.Azure.Cosmos;
 
-namespace WarrenSoft.Reminders.Infra;
+namespace Warrensoft.Reminders.Infra;
 
 public sealed class CosmosJsonSerializer : CosmosSerializer
 {

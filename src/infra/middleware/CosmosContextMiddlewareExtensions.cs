@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 
-namespace WarrenSoft.Reminders.Infra;
+namespace Warrensoft.Reminders.Infra;
 
 public static class CosmosContextMiddlewareExtensions
 {

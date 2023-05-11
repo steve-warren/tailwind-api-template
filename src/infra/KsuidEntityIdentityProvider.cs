@@ -1,7 +1,7 @@
 using KsuidDotNet;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
-namespace WarrenSoft.Reminders.Infra;
+namespace Warrensoft.Reminders.Infra;
 
 public sealed class KsuidEntityIdentityProvider : IEntityIdentityProvider
 {

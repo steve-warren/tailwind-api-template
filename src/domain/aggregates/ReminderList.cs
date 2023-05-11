@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
-using WarrenSoft.Reminders.Domain.Events;
+using Warrensoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain.Events;
 
-namespace WarrenSoft.Reminders.Domain;
+namespace Warrensoft.Reminders.Domain;
 
 public class ReminderList : IAggregateRoot, IEntity, IEventEmitter
 {

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Warrensoft.Reminders.Infra;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
-namespace WarrenSoft.Reminders.Http;
+namespace Warrensoft.Reminders.Http;
 
 public sealed record ChangeReminderStateCommand(string OwnerId, string ReminderId, string NewState);
 
@@ -15,7 +15,7 @@ public sealed class ChangeReminderStateCommandHandler
         [FromServices] CosmosContext context,
         CancellationToken cancellationToken)
     {
-        var reminder = await context.Reminders.FindAsync(command.ReminderId, command.OwnerId, cancellationToken);
+        var reminder = await context.Reminders.GetAsync(command.ReminderId, command.OwnerId, cancellationToken);
 
         if (reminder is null)
             return new NotFoundResult();

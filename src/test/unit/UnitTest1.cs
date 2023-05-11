@@ -1,7 +1,7 @@
 using FluentAssertions.AspNetCore.Mvc;
 using mock;
 
-using WarrenSoft.Reminders.Http;
+using Warrensoft.Reminders.Http;
 
 namespace test;
 

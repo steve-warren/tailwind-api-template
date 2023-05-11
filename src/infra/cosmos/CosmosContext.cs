@@ -1,6 +1,5 @@
 using Microsoft.Azure.Cosmos;
 using Warrensoft.Reminders.Domain;
-using WarrenSoft.Reminders.Domain;
 
 namespace Warrensoft.Reminders.Infra;
 

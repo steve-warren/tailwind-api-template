@@ -1,6 +1,6 @@
-using WarrenSoft.Reminders.Infra.Converters;
-using WarrenSoft.Reminders.Domain;
-using WarrenSoft.Reminders.Infra;
+using Warrensoft.Reminders.Infra.Converters;
+using Warrensoft.Reminders.Domain;
+using Warrensoft.Reminders.Infra;
 using Microsoft.Azure.Cosmos;
 using System.Text.Json;
 using Warrensoft.Reminders.Infra;

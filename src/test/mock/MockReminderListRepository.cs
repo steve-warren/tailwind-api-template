@@ -1,4 +1,4 @@
-﻿using WarrenSoft.Reminders.Domain;
+﻿using Warrensoft.Reminders.Domain;
 
 namespace mock;
 

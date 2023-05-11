@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Warrensoft.Reminders.Infra;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
-namespace WarrenSoft.Reminders.Http;
+namespace Warrensoft.Reminders.Http;
 
 public sealed record AddReminderCommand(
     string ListId,
@@ -22,7 +22,7 @@ public sealed class AddReminderCommandHandler
         [FromServices] IEntityIdentityProvider ids,
         CancellationToken cancellationToken)
     {
-        var reminderList = await context.ReminderLists.FindAsync(id: command.ListId, partitionKey: command.ListId, cancellationToken);
+        var reminderList = await context.ReminderLists.GetAsync(id: command.ListId, partitionKey: command.ListId, cancellationToken);
 
         if (reminderList is null)
             return new BadRequestResult();

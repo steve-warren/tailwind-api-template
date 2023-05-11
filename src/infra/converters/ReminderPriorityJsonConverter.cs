@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
-namespace WarrenSoft.Reminders.Infra.Converters;
+namespace Warrensoft.Reminders.Infra.Converters;
 
 public sealed class ReminderPriorityJsonConverter : JsonConverter<ReminderPriority>
 {

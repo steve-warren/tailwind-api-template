@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Warrensoft.Reminders.Domain;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
 namespace Warrensoft.Reminders.App;
 

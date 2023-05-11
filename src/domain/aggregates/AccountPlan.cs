@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using WarrenSoft.Reminders.Domain;
+using Warrensoft.Reminders.Domain;
 
 namespace Warrensoft.Reminders.Domain;
 

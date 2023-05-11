@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Warrensoft.Reminders.Infra;
 
-namespace WarrenSoft.Reminders.Infra;
+namespace Warrensoft.Reminders.Infra;
 
 public sealed class CosmosContextMiddleware : IMiddleware
 {

@@ -1,7 +1,8 @@
 using System.Net;
 using KsuidDotNet;
 using Microsoft.Azure.Cosmos;
-using WarrenSoft.Reminders.Domain;
+using Microsoft.Azure.Cosmos.Linq;
+using Warrensoft.Reminders.Domain;
 
 namespace Warrensoft.Reminders.Infra;
 
@@ -20,7 +21,7 @@ public class CosmosContainerSet<TAggregate> : IUnitOfWork where TAggregate : cla
 
     private IEnumerable<EntityEntry> Entries => _entryMap.Values;
 
-    public async ValueTask<TAggregate?> FindAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
+    public async ValueTask<TAggregate?> GetAsync(string id, string partitionKey, CancellationToken cancellationToken = default)
     {
         _entryMap.TryGetValue(key: id, out var entry);
 
@@ -76,6 +77,20 @@ public class CosmosContainerSet<TAggregate> : IUnitOfWork where TAggregate : cla
 
     public void Clear() =>
         _entryMap.Clear();
+    
+    public IQueryable<TAggregate> AsQueryable() =>
+        _container.GetItemLinqQueryable<TAggregate>();
+
+    public async IAsyncEnumerable<TAggregate> QueryAsync(Func<IQueryable<TAggregate>,IQueryable<TAggregate>> query)
+    {
+        var combinedQuery = query(_container.GetItemLinqQueryable<TAggregate>());
+
+        using var iter = combinedQuery.ToFeedIterator();
+
+        while(iter.HasMoreResults)
+            foreach (var item in await iter.ReadNextAsync().ConfigureAwait(false))
+                yield return item;
+    }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
